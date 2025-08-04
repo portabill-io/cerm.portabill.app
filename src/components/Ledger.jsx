@@ -190,9 +190,11 @@ const Ledger = () => {
           
           .ledger-cards {
             display: block;
-            padding: 0 16px 16px 16px;
+            padding: 0 16px 16px 32px;
           }
-
+.leger-card:last-child {
+  margin-bottom: 24px;
+}
           .page-header {
             padding: 0 16px;
           }

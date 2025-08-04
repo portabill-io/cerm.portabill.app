@@ -192,11 +192,13 @@ const Enquiries = () => {
             display: none;
           }
 
-          .enquiry-cards {
-            display: block;
-            padding: 0 16px 16px;
-          }
-
+        .enquiry-cards {
+  display: block;
+  padding: 0 16px 32px;
+}
+.enquiry-card:last-child {
+  margin-bottom: 24px;
+}
           .page-header {
             padding: 0 16px;
           }
@@ -205,6 +207,7 @@ const Enquiries = () => {
             padding: 16px;
           }
         }
+          
 
         @media (max-width: 480px) {
           .card-content {

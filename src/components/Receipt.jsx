@@ -189,9 +189,11 @@ const Receipt = () => {
 
           .receipt-cards {
             display: block;
-            padding: 0 16px 16px;
+            padding: 0 16px 32px;
           }
-
+.receipt-card:last-child {
+  margin-bottom: 24px;
+}
           .page-header {
             padding: 0 16px;
           }

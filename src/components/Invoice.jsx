@@ -209,9 +209,11 @@ const Invoice = () => {
 
           .invoice-cards {
             display: block;
-            padding: 0 16px 16px;
+             padding: 0 16px 32px;
           }
-
+.invoice-card:last-child {
+  margin-bottom: 26px;
+}
           .page-header {
             padding: 0 16px;
           }
