@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 
-
 import { Route, Routes } from 'react-router-dom';
 import QuotationManagement from './pages/QuotationManagement';
 import PurchaseOrder from './pages/PurchaseOrder';
@@ -14,23 +13,28 @@ import UserAndPermissions from './pages/UserAndPermissions';
 import EnquiryManagement from './pages/EnquiryManagement';
 import Auth from './pages/Auth';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   return (
     <div className="App">
-     <Routes>
-        <Route path='/' element={<EnquiryManagement />} />
-       <Route path='/quotationmanagement' element={<QuotationManagement />} />
-         <Route path='/purchaseorders' element={<PurchaseOrder/>} />
-           <Route path='/joborders' element={<JobOrders/>} />
-                 <Route path='/invoices' element={<InvoiceManagement/>} />
-                      <Route path='/receipts' element={<ReceiptManagement/>} />
-                        <Route path='/ledger' element={<AccountsLedger/>} />
-                          <Route path='/clients' element={<ClientMaster/>} />
-                            <Route path='/permissions' element={<UserAndPermissions/>} />
-                             <Route path='/login' element={<Auth register={false} />} />
+      <Routes>
+        <Route path='/enquirymanagement' element={<EnquiryManagement />} />
+        <Route path='/quotationmanagement' element={<QuotationManagement />} />
+        <Route path='/purchaseorders' element={<PurchaseOrder />} />
+        <Route path='/joborders' element={<JobOrders />} />
+        <Route path='/invoices' element={<InvoiceManagement />} />
+        <Route path='/receipts' element={<ReceiptManagement />} />
+        <Route path='/ledger' element={<AccountsLedger />} />
+        <Route path='/clients' element={<ClientMaster />} />
+        <Route path='/permissions' element={<UserAndPermissions />} />
+        <Route path='/' element={<Auth register={false} />} />
         <Route path='/register' element={<Auth register={true} />} />
       </Routes>
-      
+
+      {/* Toast notifications container */}
+      <ToastContainer position="top-right" autoClose={3000} pauseOnHover />
     </div>
   );
 }

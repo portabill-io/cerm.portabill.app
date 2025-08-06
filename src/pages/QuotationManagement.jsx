@@ -24,7 +24,7 @@ const QuotationManagement = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth <= 768);
 const sidebarItems = [
-  { icon: ClipboardList, label: 'Enquiries', href: '/' },
+  { icon: ClipboardList, label: 'Enquiries', href: '/enquirymanagement' },
   { icon: FileSignature, label: 'Quotations', href: '/quotationmanagement' },
   { icon: ShoppingCart, label: 'Purchase Orders', href: '/purchaseorders' },
   { icon: Briefcase, label: 'Job Orders', href: '/joborders' },
