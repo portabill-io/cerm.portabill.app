@@ -11,33 +11,115 @@ import {
   Briefcase,
   ClipboardList,
   FileCheck2,
-  Menu,X,User,LogOut
+  Menu,
+  X,
+  User,
+  LogOut
 } from 'lucide-react';
+
 import '../pages/pagestyle.css';
-Link
-import Enquiries from '../components/Enquiries';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../api/axios';
+import { toast } from 'react-toastify';
 import Quotations from '../components/Quotation';
 
-
 const QuotationManagement = () => {
+  const navigate = useNavigate();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth <= 768);
-const sidebarItems = [
-  { icon: ClipboardList, label: 'Enquiries', href: '/enquirymanagement' },
-  { icon: FileSignature, label: 'Quotations', href: '/quotationmanagement' },
-  { icon: ShoppingCart, label: 'Purchase Orders', href: '/purchaseorders' },
-  { icon: Briefcase, label: 'Job Orders', href: '/joborders' },
-  { icon: FileCheck2, label: 'Invoices', href: '/invoices' },
-  { icon: Receipt, label: 'Receipts', href: '/receipts' },
-  { icon: BarChart3, label: 'Accounts Ledger', href: '/ledger' },
-  { icon: Users, label: 'Clients', href: '/clients' },
-  { icon: Shield, label: 'Users & Permissions', href: '/permissions' }
-];
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    name: '',
+    email: '',
+    role: ''
+  });
 
-  const handleLogout = () => {
-    console.log('Logging out...');
-    // Add logout logic
+  const sidebarItems = [
+    { icon: ClipboardList, label: 'Enquiries', href: '/enquirymanagement' },
+    { icon: FileSignature, label: 'Quotations', href: '/quotationmanagement' },
+    { icon: ShoppingCart, label: 'Purchase Orders', href: '/purchaseorders' },
+    { icon: Briefcase, label: 'Job Orders', href: '/joborders' },
+    { icon: FileCheck2, label: 'Invoices', href: '/invoices' },
+    { icon: Receipt, label: 'Receipts', href: '/receipts' },
+    { icon: BarChart3, label: 'Accounts Ledger', href: '/ledger' },
+    { icon: Users, label: 'Clients', href: '/clients' },
+    { icon: Shield, label: 'Users & Permissions', href: '/permissions' }
+  ];
+
+  // Get user information on component mount
+  useEffect(() => {
+    const getUserInfo = () => {
+      try {
+        // Get user data from localStorage
+        const storedUser = localStorage.getItem('user');
+        const storedRole = localStorage.getItem('userRole');
+        
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUserInfo({
+            name: userData.name || userData.username || userData.firstName + ' ' + userData.lastName || 'User',
+            email: userData.email || 'user@example.com',
+            role: storedRole || userData.role || 'User'
+          });
+        }
+      } catch (error) {
+        console.error('Error getting user info:', error);
+        // Fallback to default values
+        setUserInfo({
+          name: 'User',
+          email: 'user@example.com',
+          role: 'User'
+        });
+      }
+    };
+
+    getUserInfo();
+  }, []);
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+
+    try {
+      setIsLoggingOut(true);
+      setShowProfileMenu(false);
+      
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        await axios.post('/auth/logout', {}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
+
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('userPermissions');
+      sessionStorage.clear();
+      
+      toast.success('Logged out successfully');
+      navigate('/', { replace: true });
+      
+    } catch (error) {
+      console.error('Logout error:', error);
+      
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('userPermissions');
+      sessionStorage.clear();
+      
+      const errorMessage = error.response?.data?.message || 'Logout failed, but you have been signed out locally';
+      toast.warn(errorMessage);
+      
+      navigate('/', { replace: true });
+      
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   useEffect(() => {
@@ -71,21 +153,21 @@ const sidebarItems = [
         </div>
 
         <nav className="sidebar-nav">
-  {sidebarItems.map((item, index) => (
-    <Link key={index} to={item.href} className="nav-item">
-      <item.icon size={20} className="nav-icon" />
-      {!sidebarCollapsed && <span className="nav-label">{item.label}</span>}
-    </Link>
-  ))}
-</nav>
+          {sidebarItems.map((item, index) => (
+            <Link key={index} to={item.href} className="nav-item">
+              <item.icon size={20} className="nav-icon" />
+              {!sidebarCollapsed && <span className="nav-label">{item.label}</span>}
+            </Link>
+          ))}
+        </nav>
 
         <div className="sidebar-footer">
           <div className="user-info">
             <div className="user-avatar"></div>
             {!sidebarCollapsed && (
               <div className="user-details">
-                <p className="user-name">John Admin</p>
-                <p className="user-email">john@admin.com</p>
+                <p className="user-name">{userInfo.name}</p>
+                <p className="user-email">{userInfo.email}</p>
               </div>
             )}
           </div>
@@ -100,7 +182,7 @@ const sidebarItems = [
               <button className="mobile-menu-btn" onClick={toggleSidebar}>
                 <Menu size={20} />
               </button>
-              <h1 className="page-title">Quatation Management</h1>
+              <h1 className="page-title">Quotation Management</h1>
             </div>
 
             <div className="navbar-right">
@@ -111,8 +193,8 @@ const sidebarItems = [
               >
                 <button className="profile-btn">
                   <div className="profile-info">
-                    <p className="profile-name">John Doe</p>
-                    <p className="profile-role">Administrator</p>
+                    <p className="profile-name">{userInfo.name}</p>
+                    <p className="profile-role">{userInfo.role}</p>
                   </div>
                   <div className="profile-avatar">
                     <User size={20} />
@@ -125,18 +207,19 @@ const sidebarItems = [
                     onMouseEnter={() => setShowProfileMenu(true)}
                     onMouseLeave={() => setShowProfileMenu(false)}
                   >
-                    <button className="dropdown-item">
-                      <User size={16} />
-                      <span>Profile</span>
-                    </button>
-                    <button className="dropdown-item">
-                      <Settings size={16} />
-                      <span>Settings</span>
-                    </button>
-                    <hr className="dropdown-divider" />
-                    <button onClick={handleLogout} className="dropdown-item logout">
+                
+          
+                    <button 
+                      onClick={handleLogout} 
+                      className="dropdown-item logout"
+                      disabled={isLoggingOut}
+                      style={{ 
+                        opacity: isLoggingOut ? 0.6 : 1,
+                        cursor: isLoggingOut ? 'not-allowed' : 'pointer'
+                      }}
+                    >
                       <LogOut size={16} />
-                      <span>Logout</span>
+                      <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
                     </button>
                   </div>
                 )}
@@ -146,7 +229,7 @@ const sidebarItems = [
         </header>
 
         {/* Main Content */}
-    <Quotations/>
+        <Quotations />
       </div>
     </div>
   );
